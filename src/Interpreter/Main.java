@@ -7,7 +7,7 @@ import java.util.*;
 public class Main {
 
     public static Locale locale = new Locale("en","US");
-    private static ResourceBundle mess = ResourceBundle.getBundle("compilerUI", locale);
+    private static ResourceBundle mess = PropertyResourceBundle.getBundle("compilerUI", locale);
 
     /**
      * Main method, called from the command line with a
@@ -51,9 +51,9 @@ public class Main {
         Lexer lexer = new Lexer(fileContents);
         List<Token> tokens = lexer.lexTokens();
 
-        /*for(Token t: tokens){
+        for(Token t: tokens){
             System.out.println(t.toString());
-        }*/
+        }
 
         CompileError.dump();
     }

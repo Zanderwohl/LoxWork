@@ -10,7 +10,7 @@ import java.util.List;
 
 public class GenerateAST {
     public static void main(String[] args) throws IOException {
-        String outputDir = "YakShave";
+        String outputDir = "src/Interpreter";
 
         defineAst(outputDir, "Expression", Arrays.asList(
                 "Binary : Expression left, Token operator, Expression right",
@@ -23,15 +23,19 @@ public class GenerateAST {
     private static void defineAst(
             String outputDir, String baseName, List<String> types
     ) throws IOException {
-        String path = /*outputDir + "/" + */baseName + ".java";
+        String path = outputDir + "/" + baseName + ".java";
+
         //File file = new File(path);
         //file.mkdirs();
         //file.createNewFile();
         PrintWriter writer = new PrintWriter(path, "UTF-8");
 
+
+
         writer.println("package Interpreter;");
         writer.println();
         writer.println("import java.util.List;");
+
         writer.println();
         writer.println("abstract class " + baseName + " {");
 
@@ -41,7 +45,14 @@ public class GenerateAST {
             defineType(writer, baseName, className, fields);
         }
 
+        writer.println();
+        writer.println("    abstract <R> R accept(Visitor<R> visitor);");
+
+        writer.println();
+        defineVisitor(writer, baseName, types);
         writer.println("}");
+
+
         writer.close();
     }
 
@@ -63,11 +74,31 @@ public class GenerateAST {
         writer.println("        }");
 
         writer.println();
+        writer.println("        @Override");
+        writer.println("        <R> R accept(Visitor<R> visitor){");
+        writer.println("            return visitor.visit" + className + baseName + "(this);");
+        writer.println("        }");
+
+        writer.println();
         for(String field: fields){
             writer.println("        final " + field + ";");
         }
 
         writer.println("    }");
         //TODO: parameters.
+    }
+
+    private static void defineVisitor(
+            PrintWriter writer, String baseName, List<String> types
+    ){
+        writer.println("    interface Visitor<R> {");
+
+        for(String type: types){
+            String typeName = type.split(":")[0].trim();
+            writer.println("        R visit" + typeName + baseName + "(Expression." + typeName + " " +
+            baseName.toLowerCase() + ");");
+        }
+
+        writer.println("    }");
     }
 }

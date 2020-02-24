@@ -2,7 +2,7 @@ package Interpreter;
 
 public class Token {
     private final Lexer.TokenType type;
-    private final String lexeme;
+    protected final String lexeme;
     private final Object literal;
     private final int line;
     private final int pos;
