@@ -1,0 +1,13 @@
+if((8 + 7) == 15){
+    print "Hello, world!";
+} else /*{
+    print 7 - 3.0;    //this is another comment
+    8.4124 + 0.4001;
+    .2341;
+}
+(8 <= 7) and (8 >= 4);
+!(<< 8) or (>> 9);
+
+function lshift(someNumber){
+    return someNumber << 3;
+}
