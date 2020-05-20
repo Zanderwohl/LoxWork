@@ -12,8 +12,9 @@ public class Lexer {
     enum TokenType {
         //Single-character tokens.
         LEFT_PAREN, RIGHT_PAREN, LEFT_BRACE, RIGHT_BRACE,
-        COMMA, DOT, MINUS, PLUS, SEMICOLON, SLASH, STAR,
+        COMMA, DOT, MINUS, PLUS, SEMICOLON, SLASH, STAR, STAR_STAR,
         LEFT_SHIFT, RIGHT_SHIFT,
+        QUESTION, COLON,
 
         BANG, BANG_EQUAL,
         EQUAL, EQUAL_EQUAL,
@@ -62,11 +63,6 @@ public class Lexer {
         keywords.put(em.getString("print"), TokenType.PRINT);
         keywords.put(em.getString("super"),TokenType.SUPER);
         keywords.put(em.getString("this"), TokenType.THIS);
-        keywords.put(em.getString("b_or"),TokenType.B_OR);
-        keywords.put(em.getString("b_and"), TokenType.B_AND);
-        keywords.put(em.getString("b_not"),TokenType.B_NOT);
-        keywords.put(em.getString("b_xor"),TokenType.B_XOR);
-        keywords.put(em.getString("b_nand"),TokenType.B_NAND);
         keywords.put(em.getString("var"),TokenType.VAR);
     }
 
@@ -101,7 +97,7 @@ public class Lexer {
             lexToken();
         }
 
-        tokens.add(new Token(TokenType.EOF, "", null, line, 0));
+        tokens.add(new Token(TokenType.EOF, "", null, line, 0, lines[line - 1]));
 
         return tokens;
     }
@@ -120,11 +116,30 @@ public class Lexer {
     private void lexToken() {
         char c = advance();
         switch(c){
+            case '?': addToken(TokenType.QUESTION); break;
+            case ':': addToken(TokenType.COLON); break;
             case '(': addToken(TokenType.LEFT_PAREN); break;
             case ')': addToken(TokenType.RIGHT_PAREN); break;
             case '{': addToken(TokenType.LEFT_BRACE); break;
             case '}': addToken(TokenType.RIGHT_BRACE); break;
             case ',': addToken(TokenType.COMMA); break;
+            case '|':
+                if(match('|')){
+                    addToken(TokenType.OR);
+                } else if(match('&')) {
+                    addToken(TokenType.B_XOR);
+                }
+                else {
+                    addToken(TokenType.B_OR);
+                }
+                break;
+            case '&':
+                if(match('&')){
+                    addToken(TokenType.AND);
+                } else {
+                    addToken(TokenType.B_AND);
+                }
+                break;
             case '.':
                 if(isDigit(peek())){
                     //advance();
@@ -135,8 +150,21 @@ public class Lexer {
                 break;
             case '+': addToken(TokenType.PLUS); break;
             case '-': addToken(TokenType.MINUS); break;
-            case '*': addToken(TokenType.STAR); break;
+            case '*':
+                if (match('*')){
+                    addToken(TokenType.STAR_STAR);
+                }
+                else {
+                    addToken(TokenType.STAR);
+                } break;
             case ';': addToken(TokenType.SEMICOLON); break;
+            case '~':
+                if(match('&')) {
+                    addToken(TokenType.B_NAND);
+                } else {
+                    addToken(TokenType.B_NOT);
+                }
+                break;
             case '!': addToken(match('=') ? TokenType.BANG_EQUAL : TokenType.BANG); break;
             case '=':addToken(match('=') ? TokenType.EQUAL_EQUAL : TokenType.EQUAL); break;
             case '<': //addToken(match('=') ? TokenType.LESS_EQUAL : TokenType.LESS);
@@ -276,7 +304,7 @@ public class Lexer {
      */
     private void addToken(TokenType type, Object literal){
         String text = code.substring(start, current);
-        tokens.add(new Token(type, text, literal, line, pos));
+        tokens.add(new Token(type, text, literal, line, pos, lines[line]));
     }
 
     /**

@@ -19,6 +19,27 @@ abstract class Expression {
         final Expression right;
     }
 
+    static class Ternary extends Expression {
+        enum Type {CONDITIONAL};
+
+        Ternary(Type type, Expression left, Expression center, Expression right){
+            this.type = type;
+            this.left = left;
+            this.center = center;
+            this.right = right;
+        }
+
+        @Override
+        <R> R accept(Visitor<R> visitor){
+            return visitor.visitTernaryExpression(this);
+        }
+
+        final Type type;
+        final Expression left;
+        final Expression center;
+        final Expression right;
+    }
+
     static class Grouping extends Expression {
         Grouping(Expression expression) {
             this.expression = expression;
@@ -67,5 +88,6 @@ abstract class Expression {
         R visitGroupingExpression(Expression.Grouping expression);
         R visitLiteralExpression(Expression.Literal expression);
         R visitUnaryExpression(Expression.Unary expression);
+        R visitTernaryExpression(Expression.Ternary expression);
     }
 }

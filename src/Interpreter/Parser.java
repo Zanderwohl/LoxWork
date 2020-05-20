@@ -24,7 +24,21 @@ public class Parser {
     }
 
     private Expression expression(){
-        return equality();
+        //return equality();
+        return conditional();
+    }
+
+    private Expression conditional(){
+        Expression expression = equality();
+
+        while(match(TokenType.QUESTION)){
+            Expression center = equality();
+            consume(TokenType.COLON, CompileError.Error.UnterminatedTernary);
+            Expression right = equality();
+            return new Expression.Ternary(Expression.Ternary.Type.CONDITIONAL, expression, center, right);
+        }
+
+        return expression;
     }
 
     private Expression equality(){
@@ -40,9 +54,21 @@ public class Parser {
     }
 
     private Expression comparison(){
-        Expression expression = addition();
+        Expression expression = logic();
 
         while(match(TokenType.GREATER, TokenType.GREATER_EQUAL, TokenType.LESS, TokenType.LESS_EQUAL)){
+            Token operator = previous();
+            Expression right = logic();
+            expression = new Expression.Binary(expression, operator, right);
+        }
+
+        return expression;
+    }
+
+    private Expression logic(){
+        Expression expression = addition();
+
+        while(match(TokenType.AND, TokenType.OR, TokenType.B_OR, TokenType.B_AND, TokenType.B_XOR, TokenType.B_NAND)){
             Token operator = previous();
             Expression right = addition();
             expression = new Expression.Binary(expression, operator, right);
@@ -64,9 +90,21 @@ public class Parser {
     }
 
     private Expression multiplication(){
-        Expression expression = unary();
+        Expression expression = exponent();
 
         while(match(TokenType.SLASH, TokenType.STAR)){
+            Token operator = previous();
+            Expression right = exponent();
+            expression = new Expression.Binary(expression, operator, right);
+        }
+
+        return expression;
+    }
+
+    private Expression exponent(){
+        Expression expression = unary();
+
+        while(match(TokenType.STAR_STAR)){
             Token operator = previous();
             Expression right = unary();
             expression = new Expression.Binary(expression, operator, right);
@@ -76,7 +114,7 @@ public class Parser {
     }
 
     private Expression unary(){
-        if(match(TokenType.BANG, TokenType.MINUS)){
+        if(match(TokenType.BANG, TokenType.MINUS, TokenType.B_NOT)){
             Token operator = previous();
             Expression right = unary();
             return new Expression.Unary(operator, right);
@@ -119,8 +157,8 @@ public class Parser {
     private ParseError error(boolean fatal, Token token, CompileError.Error error){
         int line = token.line;
         int pos = token.pos;
-        String[] details = {""};
-        CompileError.enqueue(error, line, pos, details, fatal); //TODO: pass actual code line
+        String[] details = {token.originalLine};
+        CompileError.enqueue(error, line, tokens.get(current).pos, details, fatal); //TODO: pass actual code line
         return new ParseError();
     }
 

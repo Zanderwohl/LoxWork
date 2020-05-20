@@ -18,7 +18,8 @@ public class CompileError {
         CompilerFlagNoArg(5),        //A compiler flag that requires an argument is missing that argument.
         UnrecognizedFlag(6),        //A flag that isn't a real flag was included.
         OpenLeftParen(7),            //A parenthesis was left open.
-        ExpectedExpression(8)
+        ExpectedExpression(8),
+        UnterminatedTernary(9)      //A malformed ternary operator.
         ;
 
         private final int value;
