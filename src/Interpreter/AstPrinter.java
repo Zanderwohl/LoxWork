@@ -41,6 +41,21 @@ public class AstPrinter implements Expression.Visitor<String>{
 
         return builder.toString();
     }
+
+    /* public static void main(String[] args){
+        Expression expression = new Expression.Binary(
+            new Expression.Unary(
+                    new Token(Lexer.TokenType.MINUS, "-", null, 1, 1),
+                    new Expression.Literal(123)
+            ),
+            new Token(Lexer.TokenType.STAR, "*", null, 1, 1),
+            new Expression.Grouping(
+                    new Expression.Literal(45.67)
+            )
+        );
+
+        System.out.println(new AstPrinter().print(expression));
+    }*/
 }
 
 

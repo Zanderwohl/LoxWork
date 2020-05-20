@@ -5,7 +5,7 @@ import java.util.ResourceBundle;
 
 public class CompileError {
 
-    private static ResourceBundle em = ResourceBundle.getBundle("errors", Main.locale);
+    private static ResourceBundle em = ResourceBundle.getBundle("Interpreter.errors", Main.locale);
 
     /**
      * Enum of all types of errors that can happen; each should have a unique value which can be accessed.
@@ -16,7 +16,9 @@ public class CompileError {
         UnterminatedComment(3),     //A block commend does not have a closer.
         UnterminatedString(4),      //A string does not have a closing quote.
         CompilerFlagNoArg(5),        //A compiler flag that requires an argument is missing that argument.
-        UnrecognizedFlag(6)
+        UnrecognizedFlag(6),        //A flag that isn't a real flag was included.
+        OpenLeftParen(7),            //A parenthesis was left open.
+        ExpectedExpression(8)
         ;
 
         private final int value;

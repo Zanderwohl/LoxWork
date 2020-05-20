@@ -4,7 +4,7 @@ import java.util.*;
 
 public class Lexer {
 
-    private static ResourceBundle em = ResourceBundle.getBundle("keywords", Main.locale);
+    private static ResourceBundle em = ResourceBundle.getBundle("Interpreter.keywords", Main.locale);
 
     /**
      * A list of all token-types in the languge.
@@ -77,7 +77,7 @@ public class Lexer {
 
     private int start = 0;
     private int current = 0;
-    private int line = 1;
+    private int line = 0;
     private int pos = 0;
 
     /**

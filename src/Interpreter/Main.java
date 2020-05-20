@@ -7,7 +7,7 @@ import java.util.*;
 public class Main {
 
     public static Locale locale = new Locale("en","US");
-    private static ResourceBundle mess = PropertyResourceBundle.getBundle("compilerUI", locale);
+    private static ResourceBundle mess = PropertyResourceBundle.getBundle("Interpreter.compilerUI", locale);
 
     /**
      * Main method, called from the command line with a
@@ -54,6 +54,11 @@ public class Main {
         for(Token t: tokens){
             System.out.println(t.toString());
         }
+
+        Parser parser = new Parser(tokens);
+        Expression expression = parser.parse();
+
+        System.out.println(new AstPrinter().print(expression));
 
         CompileError.dump();
     }

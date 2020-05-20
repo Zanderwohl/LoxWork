@@ -1,7 +1,5 @@
 package Interpreter;
 
-import java.util.List;
-
 abstract class Expression {
 
     static class Binary extends Expression {
