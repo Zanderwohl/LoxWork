@@ -133,7 +133,7 @@ public class Parser {
         if(match(TokenType.NIL)){
             return new Expression.Literal(null);
         }
-        if(match(TokenType.INTEGER, TokenType.DOUBLE, TokenType.STRING)){
+        if(match(TokenType.INTEGER, TokenType.DOUBLE, TokenType.STRING, TokenType.NUMBER)){
             return new Expression.Literal(previous().literal);
         }
 

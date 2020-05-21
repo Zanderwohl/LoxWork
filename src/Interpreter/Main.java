@@ -51,14 +51,17 @@ public class Main {
         Lexer lexer = new Lexer(fileContents);
         List<Token> tokens = lexer.lexTokens();
 
-        for(Token t: tokens){
-            System.out.println(t.toString());
-        }
+        //for(Token t: tokens){
+        //    System.out.println(t.toString());
+        //}
 
         Parser parser = new Parser(tokens);
         Expression expression = parser.parse();
 
-        System.out.println(new AstPrinter().print(expression));
+        //System.out.println(new AstPrinter().print(expression));
+
+        Object o = (new Interpreter()).evaluate(expression);
+        System.out.println(o.toString());
 
         CompileError.dump();
     }

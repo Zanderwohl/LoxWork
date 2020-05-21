@@ -22,7 +22,7 @@ public class Lexer {
         LESS, LESS_EQUAL,
 
         //Literals
-        IDENTIFIER, STRING, INTEGER, DOUBLE,
+        IDENTIFIER, STRING, INTEGER, DOUBLE, NUMBER,
 
         //Keywords.
         AND, OR,
@@ -385,12 +385,13 @@ public class Lexer {
                 advance();
             }
 
-            addToken(TokenType.DOUBLE, Double.parseDouble(code.substring(start, current))); //TODO: parse
+            addToken(TokenType.NUMBER, Double.parseDouble(code.substring(start, current))); //TODO: parse
         } else {
             try{
-                addToken(TokenType.INTEGER, Integer.parseInt(code.substring(start, current))); //TODO: parse
+                //addToken(TokenType.NUMBER, Integer.parseInt(code.substring(start, current))); //TODO: parse
+                addToken(TokenType.NUMBER, Double.parseDouble(code.substring(start, current))); //TODO: parse
             } catch (NumberFormatException e){
-                addToken(TokenType.DOUBLE, Double.parseDouble(code.substring(start, current))); //TODO: parse
+                addToken(TokenType.NUMBER, Double.parseDouble(code.substring(start, current))); //TODO: parse
             }
 
         }
